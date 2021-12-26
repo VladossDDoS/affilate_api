@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\SendEmailAction;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
-use App\Mail\NewClientEmail;
 use App\Models\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ class ClientController extends Controller
     public function index(): JsonResponse
     {
         return response()->json([
-            'data' => Client::get()
+            'clients' => Client::get()
         ], 200);
     }
 
@@ -30,13 +30,13 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return JsonResponse
      */
-    public function store(StoreClientRequest $request): JsonResponse
+    public function store(StoreClientRequest $request, SendEmailAction $action): JsonResponse
     {
         $client = Client::create($request->validated());
-        Mail::to($client->email)->send(new NewClientEmail($client));
+        $action->execute($client, 'greet');
 
         return response()->json([
-            'data' => $client
+            'client' => $client
         ], 201);
     }
 
@@ -51,7 +51,7 @@ class ClientController extends Controller
         $client = Client::findOrFail($id);
 
         return response()->json([
-            'data' => $client
+            'client' => $client
         ], 200);
     }
 

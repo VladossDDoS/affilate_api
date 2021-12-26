@@ -27,7 +27,8 @@ class UpdateClientRequest extends FormRequest
             'name' => 'string',
             'surname' => 'string',
             'phone' => 'string',
-            'email' => 'email'
+            'email' => 'email',
+            'country' => 'string'
         ];
     }
 }

@@ -12,76 +12,101 @@ class ClientTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testClientsCanBeRetrieved()
+    public function testAllClients()
     {
-        $response = $this->get('/api/clients');
-        $response->assertOk();
+        $clients = Client::factory()->count(2)->create();
+
+        $response = $this->get('api/clients')
+            ->assertJson([
+                'clients' => [
+                    [
+                        'name' => $clients->get(0)->name,
+                        'surname' => $clients->get(0)->surname,
+                        'phone' => $clients->get(0)->phone,
+                        'email' => $clients->get(0)->email,
+                        'country' => $clients->get(0)->country
+                    ],
+                    [
+                        'name' => $clients->get(1)->name,
+                        'surname' => $clients->get(1)->surname,
+                        'phone' => $clients->get(1)->phone,
+                        'email' => $clients->get(1)->email,
+                        'country' => $clients->get(1)->country
+                    ]
+                ]
+            ]);
     }
 
-    public function testClientCanBeCreated()
+    public function testStoreClient()
     {
-        $response = $this->post('/api/clients', ['name' => 'test1', 'surname' => 'test1', 'phone' => 'test1', 'email' => 'test1@test.test']);
-        $response->assertCreated();
+        $response = $this->postJson('api/clients', [
+            'name' => 'Name',
+            'surname' => 'Surname',
+            'phone' => '+380999999999',
+            'email' => 'email@email.com',
+            'country' => 'Country'
+        ])->assertJson([
+            'client' => [
+                'name' => 'Name',
+                'surname' => 'Surname',
+                'phone' => '+380999999999',
+                'email' => 'email@email.com',
+                'country' => 'Country'
+            ]
+        ])->assertStatus(201);
     }
 
-    public function testClientCantBeCreatedWithoutData()
+    public function testShowClient()
     {
-        $response = $this->post('/api/clients', []);
-        $response->assertStatus(400);
+        $client = Client::factory()->create();
+
+        $response = $this->get('api/clients/' . $client->id)
+            ->assertJson([
+                'client' => [
+                    'name' => $client->name,
+                    'surname' => $client->surname,
+                    'phone' => $client->phone,
+                    'email' => $client->email,
+                    'country' => $client->country
+                ]
+            ]);
     }
 
-    public function testClientCanBeShown()
+    public function testUpdateClient()
     {
-        $this->refreshDatabase();
-        $this->postJson('/api/clients', ['name' => 'test2', 'surname' => 'test2', 'phone' => 'test2', 'email' => 'test2@test.test']);
+        $client = Client::factory()->create();
 
-        $response = $this->get('/api/clients/2');
-        $response->assertOk();
+        // update client
+        $this->putJson('api/clients/' . $client->id, [
+            'name' => 'Vlad',
+            'surname' => 'Red',
+            'country' => 'Ukraine'
+        ])->assertStatus(204);
+
+        // check updated
+        $response = $this->get('api/clients/' . $client->id)
+            ->assertJson([
+                'client' => [
+                    'name' => 'Vlad',
+                    'surname' => 'Red',
+                    'phone' => $client->phone,
+                    'email' => $client->email,
+                    'country' => 'Ukraine'
+                ]
+            ]);
     }
 
-    public function testClientCantBeShownWithWrongIDDataType()
+    public function testDestroyClient()
     {
-        $response = $this->get('/api/clients/d');
-        $response->assertStatus(500);
-    }
+        $client = Client::factory()->create();
 
-    public function testClientCantBeShownIfDoesNotExist()
-    {
-        $response = $this->get('/api/clients/999');
-        $response->assertNotFound();
-    }
+        $this->delete('api/clients/' . $client->id)
+            ->assertStatus(204);
+        $this->assertSoftDeleted(Client::class, [
+            'id' => $client->id
+        ]);
 
-    public function testClientCanBeUpdated()
-    {
-        $this->refreshDatabase();
-        $this->postJson('/api/clients', ['name' => 'test3', 'surname' => 'test3', 'phone' => 'test3', 'email' => 'test3@test.test']);
-
-        $response = $this->putJson('/api/clients/3', ['name' => 'tolik']);
-        $response->assertNoContent();
-        $response = $this->get('/api/clients/3');
-        $response->assertJsonFragment(['name' => 'tolik', 'surname' => 'test3']);
-    }
-
-    public function testClientDoesNotUpdateWithoutData()
-    {
-        $this->postJson('/api/clients', ['name' => 'test4', 'surname' => 'test4', 'phone' => 'test4', 'email' => 'test4@test.test']);
-
-        $response = $this->putJson('/api/clients/4', []);
-        $response->assertNoContent();
-        $response = $this->get('/api/clients/4');
-        $response->assertJsonFragment(['name' => 'test4', 'surname' => 'test4']);
-    }
-
-    public function testClientCanBeDeleted()
-    {
-        $this->refreshDatabase();
-        $this->postJson('/api/clients', ['name' => 'test5', 'surname' => 'test5', 'phone' => 'test5', 'email' => 'test5@test.test']);
-
-        $response = $this->delete('/api/clients/5');
-        $response->assertNoContent();
-        $this->assertSoftDeleted(Client::class, ['id' => '5']);
-
-        $response = $this->delete('/api/clients/6');
-        $response->assertNotFound();
+        $this->delete('api/clients/' . ($client->id + 1))
+            ->assertStatus(404);
     }
 }

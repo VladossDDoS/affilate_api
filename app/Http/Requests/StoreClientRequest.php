@@ -29,7 +29,8 @@ class StoreClientRequest extends FormRequest
             'name' => ['required', 'string'],
             'surname' => ['required', 'string'],
             'phone' => ['required', 'string', 'unique:clients,phone'],
-            'email' => ['required', 'email', 'unique:clients,email']
+            'email' => ['required', 'email', 'unique:clients,email'],
+            'country' => ['required', 'string']
         ];
     }
 
