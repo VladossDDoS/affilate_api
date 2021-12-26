@@ -14,8 +14,12 @@ class SendEmailAction
     {
         match($type){
             'greet' => $this->email = new NewClientEmail($client),
-            default => throw new \Exception('No such type')
+            default => $this->email = null,
         };
+
+        if (!$this->email) {
+            return false;
+        }
 
         Mail::to($client->email)->send($this->email);
 
