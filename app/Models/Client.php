@@ -15,6 +15,17 @@ class Client extends Model
         'surname',
         'phone',
         'email',
-        'country'
+        'country',
+        'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class);
+    }
 }

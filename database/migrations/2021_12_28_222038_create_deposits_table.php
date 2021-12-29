@@ -15,7 +15,14 @@ class CreateDepositsTable extends Migration
     {
         Schema::create('deposits', function (Blueprint $table) {
             $table->id();
+            $table->unsignedDouble('amount');
+            $table->enum('currency', ['UAH', 'RUB', 'USD', 'EUR']);
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('client_id')->constrained();
+            $table->enum('type', ['dep', 'ftd'])->default('dep');
+            $table->double('rate')->default('1');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

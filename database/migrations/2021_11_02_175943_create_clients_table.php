@@ -20,6 +20,7 @@ class CreateClientsTable extends Migration
             $table->string('phone')->unique();
             $table->string('email')->unique();
             $table->string('country')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -12,7 +12,7 @@ class ClientTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testStoreClient()
+    public function test_client_can_be_stored()
     {
         $this->postJson('api/clients', [
             'name' => 'Name',
