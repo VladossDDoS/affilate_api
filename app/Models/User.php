@@ -33,8 +33,30 @@ class User extends Authenticatable
         return $this->hasMany(Client::class);
     }
 
+    public function assignedClients()
+    {
+        $clients = $this->clients();
+
+        if (!$this->isAdmin()) {
+            $clients = $clients->where('user_id', $this->id);
+        }
+
+        return $clients;
+    }
+
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
+    }
+
+    public function assignedDeposits()
+    {
+        $deposits = $this->deposits()();
+
+        if (!$this->isAdmin()) {
+            $deposits = $deposits->where('user_id', $this->id);
+        }
+
+        return $deposits;
     }
 }

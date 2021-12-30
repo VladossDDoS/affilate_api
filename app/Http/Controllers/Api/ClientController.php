@@ -13,7 +13,6 @@ class ClientController extends Controller
     public function store(StoreClientRequest $request, SendEmailAction $action): JsonResponse
     {
         $client = Client::create($request->validated());
-        $action->execute($client, 'greet');
 
         return response()->json([
             'client' => $client

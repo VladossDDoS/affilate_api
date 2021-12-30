@@ -20,8 +20,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Client::class => ClientPolicy::class,
-        Deposit::class => DepositPolicy::class,
-        User::class => UserPolicy::class
+        Deposit::class => DepositPolicy::class
     ];
 
     /**
