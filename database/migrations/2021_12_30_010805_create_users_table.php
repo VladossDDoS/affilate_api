@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('username');
             $table->string('password');
-            $table->enum('role', ['admin', 'agent']);
+            $table->foreignId('role_id')->constrained();
             $table->softDeletes();
             $table->timestamps();
         });

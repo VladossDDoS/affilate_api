@@ -16,12 +16,17 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'password',
-        'role'
+        'role_id'
     ];
 
     protected $hidden = [
         'password'
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 
     public function isAdmin()
     {
