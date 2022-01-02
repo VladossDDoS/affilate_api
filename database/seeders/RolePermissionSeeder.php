@@ -22,10 +22,13 @@ class RolePermissionSeeder extends Seeder
             'role_id' => 1,
             'permission_id' => 2
         ]);
-
         RolePermission::create([
             'role_id' => 2,
             'permission_id' => 2
+        ]);
+        RolePermission::create([
+            'role_id' => 1,
+            'permission_id' => 3
         ]);
     }
 }

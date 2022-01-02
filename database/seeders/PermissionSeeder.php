@@ -19,11 +19,15 @@ class PermissionSeeder extends Seeder
             'slug' => 'create_users',
             'description' => 'Create new users'
         ]);
-
         Permission::create([
             'name' => 'Update users',
             'slug' => 'update_users',
             'description' => 'Update all users, change role and other information'
+        ]);
+        Permission::create([
+            'name' => 'View roles',
+            'slug' => 'role_viewany',
+            'description' => 'View all roles list'
         ]);
     }
 }
