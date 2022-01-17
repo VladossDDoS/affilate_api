@@ -129,10 +129,10 @@ class RolePolicy
         return false;
     }
 
-    public function findPermission(User $user, string $slug)
+    public function findPermission($user, string $slug)
     {
         return $user->role->rolePermissions()->whereHas('permission', function ($query) use ($slug) {
                 return $query->where('slug', $slug);
-            })->first()->permission;
+            })->first()->permission ?? null;
     }
 }

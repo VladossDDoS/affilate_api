@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,9 @@ class RolesController extends Controller
             ]);
         }
 
-        return back();
+        return redirect('dashboard')->withErrors([
+            'message' => __('errors.no_permission')
+        ]);
     }
 
     public function create()

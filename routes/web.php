@@ -22,8 +22,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::prefix('roles')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/', [RolesController::class, 'index']);
+Route::prefix('roles')->middleware(['auth'])->group(function () {
+    Route::get('/', [RolesController::class, 'index'])->name('roles');
 });
 
 require __DIR__ . '/auth.php';
